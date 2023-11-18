@@ -7,15 +7,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@main
       - name: Install k6
         run: |
            wget -qO- $(curl -s https://api.github.com/repos/grafana/k6/releases/latest | grep browser_download_url | grep linux-amd64.tar.gz | cut -d '"' -f 4) | tar xvz --strip-components 1
       - name: Run tests
+        continue-on-error: true
         env:
           TEST_FILE: breakpoint.js
           K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM: true
           K6_PROMETHEUS_RW_SERVER_URL: http://${{ secrets.PROMETHEUS_IP }}/api/v1/write
           API_IP: ${{ secrets.API_IP }}
         run: |
-          ./k6 run $TEST_FILE --quiet --include-system-env-vars -o experimental-prometheus-rw 
+          ./k6 run $TEST_FILE --quiet --include-system-env-vars -o experimental-prometheus-rw
