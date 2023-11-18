@@ -1,0 +1,22 @@
+name: Main Workflow
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    name: Run k6 test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install k6
+        run: |
+          curl https://github.com/grafana/k6/releases/download/v0.44.0/k6-v0.44.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
+      - name: Run tests
+        env:
+          TEST_FILE: stress.js
+          K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM: true
+          K6_PROMETHEUS_RW_SERVER_URL: http://${{ secrets.PROMETHEUS_IP }}/api/v1/write
+          K6_PROMETHEUS_RW_TREND_STATS: 'p(95),p(99),min,max'
+          API_IP: ${{ secrets.API_IP }}
+        run: |
+          ./k6 run $TEST_FILE --no-color --quiet --include-system-env-vars -o experimental-prometheus-rw 

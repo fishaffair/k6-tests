@@ -1,0 +1,18 @@
+name: k6 load test
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    name: Run k6 test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run k6 test
+        uses: grafana/k6-action@v0.3.0
+        with:
+          filename: stress.js
+        env:
+          K6_PROMETHEUS_RW_SERVER_URL: http://${{ secrets.PROMETHEUS_IP }}/api/v1/write
+          K6_PROMETHEUS_RW_TREND_STATS: 'p(95),p(99),min,max'
+          API_IP: ${{ secrets.API_IP }}
