@@ -12,11 +12,11 @@ export const options = {
   scenarios: {
     reads: {
       executor: 'ramping-arrival-rate',
-      preAllocatedVUs: 80,
+      preAllocatedVUs: 50,
       exec: 'reads',
     stages: [
-     { duration: '5m', target: 1000 },
-     { duration: '15m', target: 1000 },
+     { duration: '5m', target: 500 },
+     { duration: '15m', target: 500 },
      { duration: '5m', target: 0 },
     ],
    },
