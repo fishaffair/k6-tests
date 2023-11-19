@@ -2,7 +2,7 @@ name: K6 stress test
 on:
   workflow_dispatch:
 jobs:
-  build:
+  test:
     name: Run k6 test
     runs-on: ubuntu-latest
     steps:
@@ -19,3 +19,10 @@ jobs:
           API_IP: ${{ secrets.API_IP }}
         run: |
           ./k6 run $TEST_FILE --quiet --include-system-env-vars -o experimental-prometheus-rw
+      - name: Upload artifact
+        uses: actions/upload-artifact@main
+          with:
+            name: test-results
+            path: | 
+              ./summary.txt
+              ./result.html
