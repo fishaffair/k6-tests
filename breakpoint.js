@@ -1,5 +1,8 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import { check } from 'k6';
+import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
+
 
 export const options = {
   discardResponseBodies: true,
@@ -24,4 +27,14 @@ export default function () {
   check(http.get(url, params), {
     'status 200': (r) => r.status === 200,
   });
+}
+
+export function handleSummary(data) {
+  console.log('Finished executing performance tests');
+
+  return {
+    'stdout': textSummary(data, { indent: ' ', enableColors: false }),
+    'summary.txt': textSummary(data, { indent: ' ', enableColors: false }),
+    "result.html": htmlReport(data),
+  };
 }
