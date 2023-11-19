@@ -21,8 +21,8 @@ jobs:
           ./k6 run $TEST_FILE --quiet --include-system-env-vars -o experimental-prometheus-rw
       - name: Upload artifact
         uses: actions/upload-artifact@main
-          with:
-            name: test-results
-            path: | 
-              ./summary.txt
-              ./result.html
+        with:
+          name: test-results
+          path: | 
+            ./summary.txt
+            ./result.html
